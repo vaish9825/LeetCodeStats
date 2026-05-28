@@ -1,4 +1,4 @@
-# LeetCode Metrics Dashboard
+# LeetCodeStats Dashboard
 
 A web-based dashboard that fetches and visualizes real-time LeetCode profile statistics using the LeetCode GraphQL API.
 
