@@ -2,6 +2,11 @@
 
 A web-based dashboard that fetches and visualizes real-time LeetCode profile statistics using the LeetCode GraphQL API.
 
+## Live Demo
+
+https://vaish9825.github.io/LeetCodeStats/
+
+
 ## Features
 
 * Search any LeetCode username
