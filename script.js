@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-
     const searchButton = document.getElementById("search-btn");
     const usernameInput = document.getElementById("user-input");
     const statsContainer = document.querySelector(".stats-container");
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const hardLabel = document.getElementById("hard-label");
     const cardStatsContainer = document.querySelector(".stats-cards");
 
-    //return true or false based on a regex
     function validateUsername(username) {
         if(username.trim() === "") {
             alert("Username should not be empty");
@@ -27,14 +25,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function fetchUserDetails(username) {
-
-        try{
+        try {
             searchButton.textContent = "Searching...";
             searchButton.disabled = true;
-            //statsContainer.classList.add("hidden");
+            
+            // Hide the container while searching so old data disappears
+            statsContainer.classList.add("hidden"); 
 
-            // const response = await fetch(url);
-            const proxyUrl = 'https://corsproxy.io/?'
+            const proxyUrl = 'https://corsproxy.io/?';
             const targetUrl = 'https://leetcode.com/graphql/';
             
             const myHeaders = new Headers();
@@ -51,16 +49,26 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             const response = await fetch(proxyUrl+targetUrl, requestOptions);
+            
             if(!response.ok) {
-                throw new Error("Unable to fetch the User details");
+                throw new Error("Unable to fetch the User details. The proxy might be having issues.");
             }
+            
             const parsedData = await response.json();
-            console.log("Logging data: ", parsedData) ;
+            console.log("Logging data: ", parsedData);
+
+            // NEW: Check if the user actually exists! 
+            // If LeetCode can't find them, 'matchedUser' will be null and crash the code.
+            if(parsedData.errors || parsedData.data.matchedUser === null) {
+                throw new Error("User not found!");
+            }
 
             displayUserData(parsedData);
         }
         catch(error) {
-            statsContainer.innerHTML = `<p>${error.message}</p>`
+            console.error(error);
+            // Instead of wiping out our HTML container, let's just show an alert
+            alert(error.message); 
         }
         finally {
             searchButton.textContent = "Search";
@@ -74,14 +82,11 @@ document.addEventListener("DOMContentLoaded", function() {
         label.textContent = `${solved}/${total}`;
     }
 
-
     function displayUserData(parsedData) {
-        const totalQues = parsedData.data.allQuestionsCount[0].count;
         const totalEasyQues = parsedData.data.allQuestionsCount[1].count;
         const totalMediumQues = parsedData.data.allQuestionsCount[2].count;
         const totalHardQues = parsedData.data.allQuestionsCount[3].count;
 
-        const solvedTotalQues = parsedData.data.matchedUser.submitStats.acSubmissionNum[0].count;
         const solvedTotalEasyQues = parsedData.data.matchedUser.submitStats.acSubmissionNum[1].count;
         const solvedTotalMediumQues = parsedData.data.matchedUser.submitStats.acSubmissionNum[2].count;
         const solvedTotalHardQues = parsedData.data.matchedUser.submitStats.acSubmissionNum[3].count;
@@ -97,24 +102,23 @@ document.addEventListener("DOMContentLoaded", function() {
             {label: "Overall Hard Submissions", value:parsedData.data.matchedUser.submitStats.totalSubmissionNum[3].submissions },
         ];
 
-        console.log("card ka data: " , cardsData);
-
         cardStatsContainer.innerHTML = cardsData.map(
             data => 
                     `<div class="card">
                     <h4>${data.label}</h4>
                     <p>${data.value}</p>
                     </div>`
-        ).join("")
+        ).join("");
 
+        // Reveal the container ONLY when everything is successfully populated
+        statsContainer.classList.remove("hidden");
     }
 
     searchButton.addEventListener('click', function() {
         const username = usernameInput.value;
-        console.log("logggin username: ", username);
         if(validateUsername(username)) {
             fetchUserDetails(username);
         }
     })
 
-})
+});
