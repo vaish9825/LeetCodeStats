@@ -32,23 +32,19 @@ document.addEventListener("DOMContentLoaded", function() {
             // Hide the container while searching so old data disappears
             statsContainer.classList.add("hidden"); 
 
-            const proxyUrl = 'https://corsproxy.io/?';
-            const targetUrl = 'https://leetcode.com/graphql/';
-            
-            const myHeaders = new Headers();
-            myHeaders.append("content-type", "application/json");
-
-            const graphql = JSON.stringify({
+            const graphql = {
                 query: "\n    query userSessionProgress($username: String!) {\n  allQuestionsCount {\n    difficulty\n    count\n  }\n  matchedUser(username: $username) {\n    submitStats {\n      acSubmissionNum {\n        difficulty\n        count\n        submissions\n      }\n      totalSubmissionNum {\n        difficulty\n        count\n        submissions\n      }\n    }\n  }\n}\n    ",
-                variables: { "username": `${username}` }
-            })
-            const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: graphql,
+                variables: { "username": username }
             };
 
-            const response = await fetch(proxyUrl+targetUrl, requestOptions);
+            // Notice we are fetching from our OWN /api/leetcode route now!
+            const response = await fetch('/api/leetcode', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(graphql)
+            });
             
             if(!response.ok) {
                 throw new Error("Unable to fetch the User details. The proxy might be having issues.");
