@@ -6,8 +6,7 @@ A full-stack web dashboard that fetches and visualizes real-time LeetCode profil
 
 ## Features
 
-* Search any LeetCode username
-* Real-time coding statistics and submission metrics
+* Search any LeetCode username for real-time coding statistics and submission metrics
 * Animated circular progress bars for Easy, Medium, and Hard problems along with dynamic stat cards with responsive UI
 * **Custom API Proxy** to securely bypass browser CORS restrictions
 * Smooth and clean user experience
