@@ -196,3 +196,34 @@ h1 {
 .hidden {
     display: none !important;
 }
+
+/* =========================================
+   Mobile Responsiveness (Screens under 768px)
+   ========================================= */
+@media (max-width: 768px) {
+    
+    /* 1. Stack the input field and search button */
+    .user-input-container { 
+        flex-direction: column;
+    }
+    
+    #user-input, #search-btn {
+        width: 100%;
+    }
+
+    /* 2. Stack the progress circles perfectly in a column */
+    .progress {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px; /* Gives them a bit more breathing room vertically */
+    }
+
+    /* 3. Make the stats cards span 100% width instead of 48% */
+    .stats-cards {
+        flex-direction: column;
+    }
+
+    .card {
+        width: 100%; 
+    }
+}
