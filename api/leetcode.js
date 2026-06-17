@@ -1,4 +1,14 @@
+const redis = require("../lib/redis");
+
 export default async function handler(req, res) {
+
+  await redis.set("test", "hello");
+
+  const value = await redis.get("test");
+
+  console.log(value);
+
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
