@@ -1,54 +1,128 @@
 # LeetCodeStats Dashboard
 
-A full-stack web dashboard that fetches and visualizes real-time LeetCode profile statistics using the LeetCode GraphQL API and a custom Vercel Serverless backend.
+A full-stack web dashboard that fetches and visualizes real-time LeetCode profile statistics using the official LeetCode GraphQL API. The application uses a custom Vercel Serverless backend with Upstash Redis caching to securely proxy requests, reduce redundant API calls, and improve response times.
 
-**Live Demo:** [https://leet-code-stats-two.vercel.app](https://leet-code-stats-two.vercel.app) 
+**Live Demo:** https://leet-code-stats-two.vercel.app
+
+---
 
 ## Features
 
-* Search any LeetCode username for real-time coding statistics and submission metrics
-* Animated circular progress bars for Easy, Medium, and Hard problems along with dynamic stat cards with responsive UI
-* **Custom API Proxy** to securely bypass browser CORS restrictions
-* Smooth and clean user experience
+* Search any LeetCode username and view real-time coding statistics
+* Custom Vercel Serverless API to securely bypass browser CORS restrictions
+* **Upstash Redis caching (30-minute TTL)** for faster repeated searches and reduced GraphQL API requests
+* Responsive design optimized for desktop and mobile devices
+
+---
 
 ## Tech Stack
 
-* **Frontend:** HTML5, CSS3, Vanilla JavaScript
-* **Backend:** Vercel Serverless Functions (Node.js)
-* **Data Integration:** LeetCode GraphQL API
+### Frontend
 
-## How It Works
+* HTML5
+* CSS3
+* Vanilla JavaScript
 
-To ensure security and bypass strict browser CORS policies, this application uses a proxy architecture:
-1. The user enters a LeetCode username on the frontend.
-2. The frontend sends a request to our custom Vercel Serverless backend route (`/api/leetcode`).
-3. The backend securely communicates with the official LeetCode GraphQL API, retrieves the data, and passes it back to the client.
-4. The response data is processed and displayed dynamically through progress indicators and metric cards.
+### Backend
+
+* Node.js
+* Vercel Serverless Functions
+
+### Cache
+
+* Upstash Redis
+
+### API
+
+* LeetCode GraphQL API
+
+---
+
+## Architecture
+
+The application follows a cache-first serverless architecture.
+
+```
+Browser
+    │
+    ▼
+Frontend (HTML/CSS/JavaScript)
+    │
+    ▼
+Vercel Serverless Function
+    │
+ ┌──┴──────────┐
+ │             │
+ │  Redis      │
+ │  (Cache)    │
+ └──┬──────────┘
+    │
+Cache Miss
+    │
+    ▼
+LeetCode GraphQL API
+    │
+    ▼
+Response cached for 30 minutes
+    │
+    ▼
+Frontend
+```
+---
 
 ## Local Development
 
- You must run a local server using the Vercel CLI.
-
 ### Prerequisites
-* [Node.js](https://nodejs.org/) installed on your machine
-* Git installed on your machine
 
-### Quick Start
+* Node.js
+* Git
+* Vercel CLI
+* Upstash Redis account
 
-Run the following commands in your terminal to set up and start the project locally:
+---
+
+### Installation
 
 ```bash
-# 1. Clone the repository
-git clone [https://github.com/vaish9825/LeetCodeStats.git](https://github.com/vaish9825/LeetCodeStats.git)
+# Clone the repository
+git clone https://github.com/vaish9825/LeetCodeStats.git
 
-# 2. Navigate into the project directory
+# Navigate into the project
 cd LeetCodeStats
 
-# 3. Install the Vercel CLI globally (if you haven't already)
+# Install dependencies
+npm install
+
+# Install Vercel CLI (if not already installed)
 npm install -g vercel
 
-# 4. Link the project to your Vercel account (follow the prompts)
+# Link the project
 vercel link
+```
 
-# 5. Start the local development server
+---
+
+### Environment Variables
+
+Create a `.env.local` file in the project root.
+
+```env
+UPSTASH_REDIS_REST_URL=YOUR_UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
+```
+
+---
+
+### Run the Project
+
+```bash
 vercel dev
+```
+
+The application will be available at:
+
+```
+http://localhost:3000
+```
+
+---
